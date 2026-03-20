@@ -105,10 +105,14 @@ def _extract_modified_files(commits: List[Dict[str, Any]]) -> List[str]:
 async def github_webhook(
     request: Request,
     x_hub_signature_256: str = Header(default="", alias="X-Hub-Signature-256"),
+    x_github_event: str = Header(default="")
 ) -> Dict[str, str]:
+
+    if x_github_event == "ping":
+        return {"message": "pong"}
+
     raw_body = await request.body()
     _validate_signature(x_hub_signature_256, raw_body)
-
     try:
         body = json.loads(raw_body.decode("utf-8"))
     except (ValueError, UnicodeDecodeError) as exc:

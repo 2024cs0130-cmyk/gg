@@ -4,22 +4,39 @@ import { TrendingUp, Trophy, User, LogOut, Zap, GitCommit, MessageSquare, Eye, E
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, Radar, PolarGrid, PolarAngleAxis, BarChart, Bar } from 'recharts'
 
 const radarData = [{s:'Relevance',v:82},{s:'Impact',v:74},{s:'Complexity',v:91},{s:'Glue Work',v:68},{s:'Consistency',v:79},{s:'Coverage',v:85}]
-const achievements: Array<{ title: string; desc: string; color: string; icon: string }> = []
+const achievements: Array<{ title: string; desc: string; color: string; icon: string }> = [
+  {title:'Bug Slayer',desc:'Resolved 12 production bugs with zero rollback.',color:'#22c55e',icon:'🛠️'},
+  {title:'Clean Commit Week',desc:'7 consecutive commits above 75 effort score.',color:'#6366f1',icon:'🔥'},
+  {title:'Mentor Boost',desc:'Supported two teammates on architecture reviews.',color:'#f59e0b',icon:'🤝'},
+]
 const buildMockScores = () =>
-  Array.from({ length: 0 }, () => ({
-    sha: '',
-    score: 0,
-    ticket: '',
-    confidence: 'low',
-    explanation: '',
-    created_at: '',
-  }))
+  [
+    {sha:'9f2ac3d',score:88,ticket:'PAY-214',confidence:'high',explanation:'Refactored payment retry backoff and added integration tests.',created_at:'2026-03-19T13:10:00Z'},
+    {sha:'5ad90b1',score:84,ticket:'AUTH-112',confidence:'high',explanation:'Optimized token refresh path and reduced auth latency.',created_at:'2026-03-19T09:22:00Z'},
+    {sha:'8bc41fe',score:79,ticket:'API-340',confidence:'high',explanation:'Added idempotency guard for webhook replay safety.',created_at:'2026-03-18T16:45:00Z'},
+    {sha:'6d9f0a2',score:92,ticket:'SRCH-301',confidence:'high',explanation:'Improved search ranking weight calculation with benchmarks.',created_at:'2026-03-18T11:08:00Z'},
+    {sha:'1cf3e44',score:75,ticket:'MOB-88',confidence:'medium',explanation:'Patched mobile sync timeout handling and retries.',created_at:'2026-03-17T18:33:00Z'},
+    {sha:'be07dd9',score:81,ticket:'UI-209',confidence:'high',explanation:'Reduced bundle size by lazy-loading heavy modules.',created_at:'2026-03-17T09:55:00Z'},
+    {sha:'2fae118',score:73,ticket:'OBS-44',confidence:'medium',explanation:'Added tracing spans for queue worker instrumentation.',created_at:'2026-03-16T17:21:00Z'},
+    {sha:'d3c5aa1',score:68,ticket:'DB-76',confidence:'medium',explanation:'Added index for slow query path and adjusted migration.',created_at:'2026-03-16T10:04:00Z'},
+    {sha:'a61e90c',score:77,ticket:'AUTH-108',confidence:'high',explanation:'Improved session invalidation flow for revoked users.',created_at:'2026-03-15T14:00:00Z'},
+    {sha:'4f98a2e',score:71,ticket:'PAY-201',confidence:'medium',explanation:'Handled corner case for duplicate payment callbacks.',created_at:'2026-03-14T20:41:00Z'},
+    {sha:'7e4bc92',score:83,ticket:'UI-198',confidence:'high',explanation:'Shipped dashboard accessibility fixes and keyboard nav.',created_at:'2026-03-14T12:28:00Z'},
+    {sha:'c1a2f67',score:69,ticket:'OPS-55',confidence:'medium',explanation:'Automated stale branch cleanup and release prep.',created_at:'2026-03-13T16:14:00Z'},
+    {sha:'38deaa9',score:74,ticket:'API-332',confidence:'high',explanation:'Added schema validation for inbound webhook payloads.',created_at:'2026-03-13T10:06:00Z'},
+    {sha:'f67b201',score:80,ticket:'SRCH-294',confidence:'high',explanation:'Fine-tuned ranking fallback logic for sparse results.',created_at:'2026-03-12T19:15:00Z'},
+  ]
 
 const buildWeekData = () =>
-  ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({
-    day: d,
-    score: 0,
-  }))
+  [
+    {day:'Mon',score:78},
+    {day:'Tue',score:82},
+    {day:'Wed',score:75},
+    {day:'Thu',score:88},
+    {day:'Fri',score:91},
+    {day:'Sat',score:69},
+    {day:'Sun',score:73},
+  ]
 const S = ({s}:{s:number})=>{const c=s>=70?'#22c55e':s>=40?'#f59e0b':'#ef4444';return <span style={{background:`${c}18`,color:c,fontSize:'11px',fontWeight:'600',padding:'2px 8px',borderRadius:'20px',fontFamily:'monospace'}}>{s}</span>}
 const T = ({active,payload}:any)=>active&&payload?.length?<div style={{background:'#161616',border:'1px solid #262626',borderRadius:'8px',padding:'8px 12px'}}><p style={{color:'#6366f1',fontSize:'16px',fontWeight:'700',margin:0}}>{payload[0].value}<span style={{color:'#52525b',fontSize:'11px'}}>/100</span></p></div>:null
 
@@ -49,13 +66,22 @@ export default function DevDash() {
     teamwork: '#f59e0b',
     milestone: '#a855f7',
   }
-  const earnedAchievements: Array<{ icon: string; title: string; description: string; earnedAt: string; type: string }> = []
-  const lockedAchievements: Array<{ icon: string; title: string; description: string; progress: number }> = []
+  const earnedAchievements: Array<{ icon: string; title: string; description: string; earnedAt: string; type: string }> = [
+    {icon:'🔥',title:'7-Day Momentum',description:'Committed with score 70+ for seven consecutive days.',earnedAt:'2026-03-18',type:'streak'},
+    {icon:'🧠',title:'Complexity Crusher',description:'Merged three high-complexity refactors with no regressions.',earnedAt:'2026-03-16',type:'complexity'},
+    {icon:'🤝',title:'Team Multiplier',description:'Reviewed 6 PRs and unblocked two teammates.',earnedAt:'2026-03-15',type:'teamwork'},
+    {icon:'🏁',title:'Q1 Milestone',description:'Closed 25 tickets this quarter with strong consistency.',earnedAt:'2026-03-10',type:'milestone'},
+  ]
+  const lockedAchievements: Array<{ icon: string; title: string; description: string; progress: number }> = [
+    {icon:'🚀',title:'Century Club',description:'Reach a 100 effort score on a production commit.',progress:78},
+    {icon:'🛡️',title:'Zero Regression Sprint',description:'Complete one sprint with no regression defects.',progress:62},
+    {icon:'📚',title:'Knowledge Beacon',description:'Publish 5 internal engineering guides.',progress:40},
+  ]
   const initials = name.split(' ').map((n:string)=>n[0]).join('').slice(0,2).toUpperCase()
   const totalCommits = scores.length
   const avgScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b.score,0)/scores.length) : 0
   const bestScore = scores.length ? Math.max(...scores.map((s)=>s.score)) : 0
-  const prsReviewed = 0
+  const prsReviewed = 14
   const bestWeek = weekData.length ? weekData.reduce((best, cur)=> cur.score > best.score ? cur : best, weekData[0]) : { day: '-', score: 0 }
   const worstWeek = weekData.length ? weekData.reduce((worst, cur)=> cur.score < worst.score ? cur : worst, weekData[0]) : { day: '-', score: 0 }
   const domainTagMap: Record<string, string> = {
@@ -67,7 +93,7 @@ export default function DevDash() {
     Coverage: 'Reliability',
   }
   const skillTags = [...radarData].sort((a,b)=>b.v-a.v).slice(0,4).map((d)=>domainTagMap[d.s] || d.s)
-  const managerSpecialtyNote = 'No manager notes yet.'
+  const managerSpecialtyNote = 'Strong in backend reliability and incident handling; next growth area is frontend architecture ownership.'
   return (
     <div style={{display:'flex',height:'100vh',background:'#0a0a0a',fontFamily:'system-ui,sans-serif',overflow:'hidden'}}>
       <div style={{width:'210px',background:'#0f0f0f',borderRight:'1px solid #1a1a1a',display:'flex',flexDirection:'column',padding:'24px 0',flexShrink:0}}>

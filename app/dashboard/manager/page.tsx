@@ -4,12 +4,27 @@ import { Users, Bell, UserCheck, GitMerge, LogOut, TrendingUp, TrendingDown, Ale
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, Cell } from 'recharts'
 
 const DEVS = [
-  {name:'Rajan Kumar',user:'rajan',score:0,prev:0,confidence:'low',relevance:0,impact:0,complexity:0,glue:0,explanation:'No scored commits yet.',burnout:false,ticket:'-',lastCommit:'-'},
-  {name:'Priya Sharma',user:'priya',score:0,prev:0,confidence:'low',relevance:0,impact:0,complexity:0,glue:0,explanation:'No scored commits yet.',burnout:false,ticket:'-',lastCommit:'-'},
-  {name:'Arjun Malhothra',user:'arjun',score:0,prev:0,confidence:'low',relevance:0,impact:0,complexity:0,glue:0,explanation:'No scored commits yet.',burnout:false,ticket:'-',lastCommit:'-'},
+  {name:'Rajan Kumar',user:'rajan',score:89,prev:84,confidence:'high',relevance:0.92,impact:0.86,complexity:0.8,glue:0.69,explanation:'Stabilized payment retries and fixed flaky checkout tests.',burnout:false,ticket:'PAY-214',lastCommit:'2h ago'},
+  {name:'Priya Sharma',user:'priya',score:78,prev:74,confidence:'high',relevance:0.82,impact:0.75,complexity:0.79,glue:0.71,explanation:'Improved OAuth token refresh flow and reduced auth errors.',burnout:false,ticket:'AUTH-112',lastCommit:'4h ago'},
+  {name:'Arjun Malhothra',user:'arjun',score:62,prev:70,confidence:'medium',relevance:0.72,impact:0.61,complexity:0.84,glue:0.53,explanation:'Delivered mobile sync patch but currently carrying blocker load.',burnout:true,ticket:'MOB-88',lastCommit:'1d ago'},
+  {name:'Karan Patel',user:'karan',score:93,prev:90,confidence:'high',relevance:0.95,impact:0.91,complexity:0.88,glue:0.64,explanation:'Shipped search ranking update with measurable engagement gains.',burnout:false,ticket:'SRCH-301',lastCommit:'3h ago'},
+  {name:'Meera Iyer',user:'meera',score:84,prev:81,confidence:'high',relevance:0.87,impact:0.79,complexity:0.76,glue:0.9,explanation:'Led frontend migration and supported cross-team release.',burnout:false,ticket:'UI-209',lastCommit:'6h ago'},
 ]
-const ALERTS: Array<{ id: string; type: string; dev: string; msg: string; sev: string }> = []
-const TREND = ['W1','W2','W3','W4','W5','W6','W7','W8'].map((w)=>({week:w,rajan:0,arjun:0,priya:0,karan:0,meera:0}))
+const ALERTS: Array<{ id: string; type: string; dev: string; msg: string; sev: string }> = [
+  {id:'a1',type:'burnout',dev:'Arjun Malhothra',msg:'High activity for 9 days with score decline.',sev:'high'},
+  {id:'a2',type:'blocker',dev:'Priya Sharma',msg:'Waiting on infra secret rotation for AUTH-112.',sev:'medium'},
+  {id:'a3',type:'dependency',dev:'Meera Iyer',msg:'Frontend release depends on API schema freeze.',sev:'medium'},
+]
+const TREND = [
+  {week:'W1',rajan:74,arjun:66,priya:70,karan:76,meera:72},
+  {week:'W2',rajan:78,arjun:69,priya:71,karan:79,meera:74},
+  {week:'W3',rajan:81,arjun:71,priya:73,karan:82,meera:76},
+  {week:'W4',rajan:83,arjun:68,priya:75,karan:85,meera:78},
+  {week:'W5',rajan:85,arjun:66,priya:76,karan:88,meera:80},
+  {week:'W6',rajan:86,arjun:63,priya:77,karan:90,meera:81},
+  {week:'W7',rajan:88,arjun:61,priya:78,karan:92,meera:83},
+  {week:'W8',rajan:89,arjun:62,priya:78,karan:93,meera:84},
+]
 const BARS = DEVS.map(d=>({name:d.name.split(' ')[0],score:d.score}))
 const BAR_COLORS = ['#6366f1','#22c55e','#ef4444','#f59e0b','#8b5cf6','#06b6d4']
 
