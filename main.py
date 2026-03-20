@@ -1,3 +1,5 @@
+# pip install python-jose[cryptography] passlib[bcrypt] reportlab python-multipart
+
 import hashlib
 import hmac
 import json
@@ -5,8 +7,18 @@ import os
 import re
 from typing import Any, Dict, List, Optional
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from jose.utils import base64url_decode, base64url_encode
+
+# Load environment variables before importing modules that use them
+load_dotenv()
+
+from auth import get_current_user  # noqa: F401
+from auth_models import Base as AuthBase
+from auth_routes import router as auth_router
+from models import engine
 
 
 GITHUB_WEBHOOK_SECRET = os.getenv("GITHUB_WEBHOOK_SECRET", "").strip()
@@ -17,10 +29,31 @@ TICKET_PATTERN = re.compile(r"[A-Z]+-\d+")
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Mount websocket routes for real-time org score streaming.
 from websocket import router as websocket_router
 
 app.include_router(websocket_router)
+app.include_router(auth_router)
+
+
+@app.on_event("startup")
+async def startup() -> None:
+    async with engine.begin() as conn:
+        await conn.run_sync(AuthBase.metadata.create_all)
+    print("All database tables created")
+
+
+@app.get("/health")
+async def health_check() -> Dict[str, str]:
+    return {"status": "ok", "version": "1.0.0"}
 
 
 def _normalize_secret(secret: str) -> bytes:

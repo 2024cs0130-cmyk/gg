@@ -95,11 +95,12 @@ def ticket_quality_score(ticket: Dict[str, Any]) -> Dict[str, Any]:
     score = 0
     reasons: List[str] = []
 
-    if word_count >= 80:
-        score += 35
-    elif word_count >= 40:
-        score += 25
+    # Minimal mode: accept shorter tickets and treat structure signals as optional.
+    if word_count >= 40:
+        score += 30
     elif word_count >= 20:
+        score += 20
+    elif word_count >= 10:
         score += 15
     else:
         score += 5
@@ -109,25 +110,25 @@ def ticket_quality_score(ticket: Dict[str, Any]) -> Dict[str, Any]:
         re.search(r"acceptance criteria|definition of done|done when", description, flags=re.IGNORECASE)
     )
     if has_acceptance_criteria:
-        score += 25
+        score += 15
     else:
-        reasons.append("missing acceptance criteria")
+        score += 5
 
     has_labels = len(labels) > 0
     if has_labels:
-        score += 15
+        score += 10
     else:
-        reasons.append("missing labels")
+        score += 5
 
     has_numbered_steps = bool(re.search(r"(^|\\n)\\s*\\d+[\\).:-]\\s+", description))
     if has_numbered_steps:
-        score += 25
+        score += 15
     else:
-        reasons.append("missing numbered implementation or reproduction steps")
+        score += 5
 
-    if score < 40:
+    if score < 20:
         rating = "INSUFFICIENT"
-    elif score < 70:
+    elif score < 50:
         rating = "LOW"
     else:
         rating = "GOOD"

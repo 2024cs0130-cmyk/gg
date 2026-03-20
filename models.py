@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from sqlalchemy import CheckConstraint, Column, DateTime, Float, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, Column, DateTime, Float, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlalchemy.orm import declarative_base
@@ -26,6 +26,8 @@ class CommitScore(Base):
     confidence = Column(String, nullable=True)
     plain_english = Column(Text, nullable=True)
     diff_translation = Column(Text, nullable=True)
+    developer_seen = Column(Boolean, nullable=False, server_default="false")
+    developer_seen_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     __table_args__ = (
@@ -100,7 +102,11 @@ if DATABASE_URL.startswith("postgres://"):
 elif DATABASE_URL.startswith("postgresql://") and "+asyncpg" not in DATABASE_URL:
     DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
-engine: AsyncEngine = create_async_engine(DATABASE_URL, future=True)
+engine: AsyncEngine = create_async_engine(
+    DATABASE_URL,
+    future=True,
+    connect_args={"statement_cache_size": 0},
+)
 
 
 async def create_all() -> None:

@@ -6,9 +6,13 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 import requests
+from dotenv import load_dotenv
 from redis import Redis
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker
+
+# Load environment variables early
+load_dotenv()
 
 from celery_app import DEAD_LETTER_QUEUE, celery_app
 from models import CommitScore, engine

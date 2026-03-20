@@ -1,10 +1,13 @@
 import os
 from datetime import datetime, timezone
 
+from dotenv import load_dotenv
 from celery import Celery, Task
 from celery.schedules import crontab
 from kombu import Queue
 
+# Load environment variables early
+load_dotenv()
 
 REDIS_URL = os.getenv("REDIS_URL", "")
 if not REDIS_URL:

@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# Environment & local secrets
+.env
+.env.*
+.ENV
+
+# Logs and local tunnel output
+*.log
+tunnel.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

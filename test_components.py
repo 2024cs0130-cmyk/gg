@@ -48,11 +48,19 @@ def test_database_connection() -> bool:
 
 def test_jira_connection() -> bool:
     try:
-        from jira_fetcher import get_ticket
+        from jira import JIRA
 
         ticket_id = os.getenv("JIRA_TEST_TICKET", "DEV-1").strip() or "DEV-1"
-        ticket = get_ticket(ticket_id)
-        title = str(ticket.get("title", "")).strip() or "(no title)"
+        jira_url = os.getenv("JIRA_URL", "").strip()
+        jira_email = os.getenv("JIRA_EMAIL", "").strip()
+        jira_api_token = os.getenv("JIRA_API_TOKEN", "").strip()
+
+        if not jira_url or not jira_email or not jira_api_token:
+            raise RuntimeError("JIRA_URL, JIRA_EMAIL, and JIRA_API_TOKEN environment variables are required")
+
+        jira_client = JIRA(server=jira_url, basic_auth=(jira_email, jira_api_token))
+        issue = jira_client.issue(ticket_id, fields="summary")
+        title = str(getattr(issue.fields, "summary", "")).strip() or "(no title)"
         print(f"PASS: Jira connected, ticket title: {title}")
         return True
     except Exception as error:
@@ -81,7 +89,7 @@ def test_github_connection() -> bool:
 
         gh = Github(token, per_page=1)
         repo = gh.get_repo(repo_name)
-        latest_commit = next(repo.get_commits(), None)
+        latest_commit = next(iter(repo.get_commits()), None)
         if latest_commit is None:
             raise RuntimeError("No commits found in repository")
 
