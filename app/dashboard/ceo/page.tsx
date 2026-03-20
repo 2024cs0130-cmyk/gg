@@ -4,14 +4,43 @@ import { Building2, Activity, Shield, BarChart2, FileText, LogOut, TrendingUp, T
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, AreaChart, Area } from 'recharts'
 
 const DEVS = [
-  {name:'Rajan Kumar',initials:'RK',score:0,burnout:false,risk:'low',module:'-'},
-  {name:'Priya Sharma',initials:'PS',score:0,burnout:false,risk:'low',module:'-'},
-  {name:'Arjun Malhothra',initials:'AM',score:0,burnout:false,risk:'low',module:'-'},
+  {name:'Rajan Kumar',initials:'RK',score:88,burnout:false,risk:'low',module:'payments-service'},
+  {name:'Priya Sharma',initials:'PS',score:81,burnout:false,risk:'medium',module:'auth-gateway'},
+  {name:'Arjun Malhothra',initials:'AM',score:74,burnout:true,risk:'high',module:'mobile-sync'},
+  {name:'Karan Patel',initials:'KP',score:93,burnout:false,risk:'low',module:'search-indexer'},
+  {name:'Meera Iyer',initials:'MI',score:86,burnout:false,risk:'low',module:'frontend-shell'},
+  {name:'Nisha Verma',initials:'NV',score:69,burnout:true,risk:'high',module:'etl-pipeline'},
 ]
-const WEEKS = ['W1','W2','W3','W4','W5','W6','W7','W8'].map((w)=>({week:w,avg:0,burnout:0,blockers:0}))
-const SKILL_RADAR = [{s:'Auth',team:0,ideal:100},{s:'Payments',team:0,ideal:100},{s:'Mobile',team:0,ideal:100},{s:'ML',team:0,ideal:100},{s:'DevOps',team:0,ideal:100},{s:'Frontend',team:0,ideal:100},{s:'Database',team:0,ideal:100}]
-const KNOWLEDGE_RISKS: Array<{ dev: string; module: string; owns: number; burnout: string; risk: string }> = []
-const TOP3: Array<{ name: string; score: number; achievement: string; medal: string }> = []
+const WEEKS = [
+  {week:'W1',avg:66,burnout:1,blockers:4},
+  {week:'W2',avg:69,burnout:1,blockers:4},
+  {week:'W3',avg:71,burnout:2,blockers:3},
+  {week:'W4',avg:73,burnout:2,blockers:3},
+  {week:'W5',avg:76,burnout:3,blockers:2},
+  {week:'W6',avg:78,burnout:2,blockers:2},
+  {week:'W7',avg:80,burnout:2,blockers:1},
+  {week:'W8',avg:82,burnout:2,blockers:1},
+]
+const SKILL_RADAR = [
+  {s:'Auth',team:72,ideal:100},
+  {s:'Payments',team:64,ideal:100},
+  {s:'Mobile',team:52,ideal:100},
+  {s:'ML',team:41,ideal:100},
+  {s:'DevOps',team:67,ideal:100},
+  {s:'Frontend',team:84,ideal:100},
+  {s:'Database',team:77,ideal:100},
+]
+const KNOWLEDGE_RISKS: Array<{ dev: string; module: string; owns: number; burnout: string; risk: string }> = [
+  {dev:'Arjun Malhothra',module:'mobile-sync',owns:78,burnout:'high',risk:'critical'},
+  {dev:'Nisha Verma',module:'etl-pipeline',owns:72,burnout:'high',risk:'high'},
+  {dev:'Priya Sharma',module:'auth-gateway',owns:64,burnout:'medium',risk:'medium'},
+  {dev:'Karan Patel',module:'search-indexer',owns:58,burnout:'low',risk:'low'},
+]
+const TOP3: Array<{ name: string; score: number; achievement: string; medal: string }> = [
+  {name:'Karan Patel',score:93,achievement:'Reduced API latency by 38%',medal:'🥇'},
+  {name:'Rajan Kumar',score:88,achievement:'Shipped payment retry engine',medal:'🥈'},
+  {name:'Meera Iyer',score:86,achievement:'Cut frontend bundle size by 26%',medal:'🥉'},
+]
 const teamAvg = Math.round(DEVS.reduce((a,b)=>a+b.score,0)/DEVS.length)
 const T3 = ({active,payload,label}:any)=>active&&payload?.length?<div style={{background:'#161616',border:'1px solid #262626',borderRadius:'8px',padding:'10px 12px'}}><p style={{color:'#a1a1aa',fontSize:'11px',margin:'0 0 6px'}}>{label}</p>{payload.map((p:any,i:number)=><p key={i} style={{color:p.color||'#fafafa',fontSize:'12px',margin:'2px 0'}}>{p.name}: {typeof p.value==='number'?p.value.toFixed(1):p.value}</p>)}</div>:null
 
