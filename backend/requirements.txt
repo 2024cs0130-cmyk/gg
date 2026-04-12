@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+python-dotenv
+sqlalchemy
+asyncpg
+celery
+redis
+requests
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+reportlab
+jira
+PyGithub
+rank-bm25
